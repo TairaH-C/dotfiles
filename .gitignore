@@ -1,0 +1,11 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+
+# Neovim plugin state (managed by lazy.nvim inside container)
+neovim/nvim/lazy-lock.json
