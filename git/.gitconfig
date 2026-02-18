@@ -1,0 +1,22 @@
+[user]
+	name = Taira_Hoshino
+
+[core]
+	autocrlf = input
+	editor = nvim
+	pager = less -FRX
+
+[init]
+	defaultBranch = main
+
+[pull]
+	rebase = true
+
+[push]
+	autoSetupRemote = true
+
+[diff]
+	colorMoved = default
+
+[merge]
+	conflictstyle = diff3
