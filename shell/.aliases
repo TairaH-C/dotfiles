@@ -16,6 +16,9 @@ alias gd='git diff'
 alias gl='git log --oneline -20'
 alias lg='lazygit'
 
+# AI tools
+alias oc='opencode'
+
 # Safety
 alias rm='rm -i'
 alias mv='mv -i'

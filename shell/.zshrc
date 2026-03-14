@@ -1,3 +1,6 @@
+# PATH
+export PATH="$HOME/.local/bin:$PATH"
+
 # Aliases
 [ -f "$HOME/.aliases" ] && source "$HOME/.aliases"
 
