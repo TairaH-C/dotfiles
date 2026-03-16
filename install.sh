@@ -2,26 +2,25 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
-XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 
-echo "==> Installing dotfiles from $DOTFILES_DIR"
+echo "========================================"
+echo "  Dotfiles Installer"
+echo "========================================"
 
-# Shell
-mkdir -p "$HOME"
-ln -sf "$DOTFILES_DIR/shell/.zshrc" "$HOME/.zshrc"
-ln -sf "$DOTFILES_DIR/shell/.aliases" "$HOME/.aliases"
+# Install packages
+bash "$DOTFILES_DIR/scripts/install-packages.sh"
 
-# Git
-ln -sf "$DOTFILES_DIR/git/.gitconfig" "$HOME/.gitconfig"
+# Setup symlinks
+bash "$DOTFILES_DIR/scripts/setup-symlinks.sh"
 
-# Neovim
-mkdir -p "$XDG_CONFIG_HOME"
-ln -sfn "$DOTFILES_DIR/neovim/nvim" "$XDG_CONFIG_HOME/nvim"
-
-# Starship
-if command -v starship &>/dev/null; then
-  mkdir -p "$XDG_CONFIG_HOME"
-  ln -sf "$DOTFILES_DIR/shell/starship.toml" "$XDG_CONFIG_HOME/starship.toml"
+# Set default shell to zsh
+if [[ "$SHELL" != *"zsh"* ]]; then
+  echo "==> Setting zsh as default shell..."
+  chsh -s "$(which zsh)"
 fi
 
-echo "==> dotfiles installed successfully"
+echo "========================================"
+echo "  Installation complete!"
+echo "  Please restart your shell or run: exec zsh"
+echo "  Then open tmux and press C-Space I to install tmux plugins"
+echo "========================================"

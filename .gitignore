@@ -9,3 +9,8 @@ Thumbs.db
 
 # Neovim plugin state (managed by lazy.nvim inside container)
 neovim/nvim/lazy-lock.json
+
+# Docker dev environment
+docker/.env
+docker/persist/zsh_history
+docker/persist/.gitconfig.local

@@ -1,0 +1,84 @@
+name: devenv
+
+services:
+  dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: devenv:latest
+    container_name: devenv
+    hostname: devenv
+
+    stdin_open: true
+    tty: true
+
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+
+    environment:
+      # API keys (from host env or .env file)
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      GITHUB_TOKEN: "${GITHUB_TOKEN:-}"
+
+      # Terminal
+      TERM: xterm-256color
+      COLORTERM: truecolor
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+
+      # SSH agent forwarding
+      SSH_AUTH_SOCK: /run/ssh-agent.sock
+
+    volumes:
+      # Workspace (bind mount)
+      - type: bind
+        source: "${WORKSPACE_ROOT:-./../..}"
+        target: /home/dev/workspace
+
+      # SSH agent socket
+      - type: bind
+        source: "${SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}"
+        target: /run/ssh-agent.sock
+        read_only: true
+
+      # Docker socket (DooD)
+      - /var/run/docker.sock:/var/run/docker.sock
+
+      # Git local config (email etc.)
+      - type: bind
+        source: "${GITCONFIG_LOCAL:-./persist/.gitconfig.local}"
+        target: /home/dev/.gitconfig.local
+        read_only: true
+
+      # Persistent tool data (named volumes)
+      - nvim-data:/home/dev/.local/share/nvim
+      - nvim-state:/home/dev/.local/state/nvim
+      - nvim-cache:/home/dev/.cache/nvim
+      - tmux-plugins:/home/dev/.tmux/plugins
+      - zsh-plugins:/home/dev/.local/share/zinit
+      - zoxide-db:/home/dev/.local/share/zoxide
+      - cargo:/home/dev/.cargo
+      - go-pkg:/home/dev/go
+      - claude-state:/home/dev/.claude
+
+      # Shell history (bind mount file)
+      - type: bind
+        source: ./persist/zsh_history
+        target: /home/dev/.zsh_history
+
+    working_dir: /home/dev/workspace
+    restart: "no"
+
+volumes:
+  nvim-data:
+  nvim-state:
+  nvim-cache:
+  tmux-plugins:
+  zsh-plugins:
+  zoxide-db:
+  cargo:
+  go-pkg:
+  claude-state:

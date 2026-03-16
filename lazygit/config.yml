@@ -1,0 +1,42 @@
+gui:
+  nerdFontsVersion: "3"
+  showIcons: true
+  theme:
+    activeBorderColor:
+      - "#a6e3a1" # Green
+      - bold
+    inactiveBorderColor:
+      - "#a6adc8" # Overlay0
+    optionsTextColor:
+      - "#89b4fa" # Blue
+    selectedLineBgColor:
+      - "#313244" # Surface0
+    cherryPickedCommitBgColor:
+      - "#45475a" # Surface1
+    cherryPickedCommitFgColor:
+      - "#a6e3a1" # Green
+    unstagedChangesColor:
+      - "#f38ba8" # Red
+    defaultFgColor:
+      - "#cdd6f4" # Text
+    searchingActiveBorderColor:
+      - "#f9e2af" # Yellow
+  authorColors:
+    "*": "#b4befe" # Lavender
+  showRandomTip: false
+
+git:
+  paging:
+    colorArg: always
+    pager: delta --dark --paging=never
+  log:
+    showGraph: always
+    order: topo-order
+
+os:
+  editPreset: "nvim"
+
+keybinding:
+  universal:
+    quit: "q"
+    return: "<esc>"

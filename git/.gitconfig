@@ -4,7 +4,7 @@
 [core]
 	autocrlf = input
 	editor = nvim
-	pager = less -FRX
+	pager = delta
 
 [init]
 	defaultBranch = main
@@ -20,3 +20,18 @@
 
 [merge]
 	conflictstyle = diff3
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	side-by-side = true
+	line-numbers = true
+	syntax-theme = Catppuccin-mocha
+
+[alias]
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+[include]
+	path = ~/.gitconfig.local

@@ -1,25 +1,60 @@
-# Navigation
-alias ll='ls -lAh --color=auto'
+# -- Navigation ----------------------------------------------------------------
+
 alias ..='cd ..'
 alias ...='cd ../..'
+alias ....='cd ../../..'
 
-# Modern CLI replacements
+# -- Modern CLI replacements ---------------------------------------------------
+
+# ls -> eza
+if command -v eza &>/dev/null; then
+  alias ls='eza --icons'
+  alias ll='eza -lah --icons --git'
+  alias lt='eza --tree --icons --level=2'
+  alias la='eza -a --icons'
+else
+  alias ll='ls -lAh --color=auto'
+fi
+
+# cd -> zoxide
+if command -v zoxide &>/dev/null; then
+  alias cd='z'
+fi
+
+# cat -> bat
+if command -v bat &>/dev/null; then
+  alias cat='bat --paging=never'
+fi
+
+# grep -> ripgrep
+if command -v rg &>/dev/null; then
+  alias grep='rg'
+fi
+
+# find -> fd
+if command -v fd &>/dev/null; then
+  alias find='fd'
+fi
+
+# -- Editors -------------------------------------------------------------------
+
 alias vi='nvim'
 alias vim='nvim'
-alias cat='bat --paging=never'
-alias grep='rg'
-alias find='fd'
 
-# Git shortcuts
+# -- Git shortcuts -------------------------------------------------------------
+
 alias gs='git status'
 alias gd='git diff'
 alias gl='git log --oneline -20'
+alias glo='git log --graph --oneline --decorate -20'
 alias lg='lazygit'
 
-# AI tools
+# -- AI tools ------------------------------------------------------------------
+
 alias oc='opencode'
 
-# Safety
+# -- Safety --------------------------------------------------------------------
+
 alias rm='rm -i'
 alias mv='mv -i'
 alias cp='cp -i'

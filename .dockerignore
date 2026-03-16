@@ -1,0 +1,6 @@
+.git
+.claude
+docker/persist/zsh_history
+docker/persist/.gitconfig.local
+docker/.env
+README.md
