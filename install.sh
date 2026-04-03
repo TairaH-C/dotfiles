@@ -2,25 +2,33 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
+MODE="${1:---docker}"  # Default to --docker if not specified
+
+# Validate argument
+case "$MODE" in
+  --docker|--host)
+    ;;
+  *)
+    echo "❌ Invalid argument: $MODE"
+    echo "Usage: $0 [--docker|--host]"
+    exit 1
+    ;;
+esac
 
 echo "========================================"
 echo "  Dotfiles Installer"
+echo "  Mode: $MODE"
 echo "========================================"
 
-# Install packages
-bash "$DOTFILES_DIR/scripts/install-packages.sh"
-
 # Setup symlinks
-bash "$DOTFILES_DIR/scripts/setup-symlinks.sh"
-
-# Set default shell to zsh
-if [[ "$SHELL" != *"zsh"* ]]; then
-  echo "==> Setting zsh as default shell..."
-  chsh -s "$(which zsh)"
+if bash "$DOTFILES_DIR/scripts/setup-symlinks.sh"; then
+  echo "✅ Symlinks setup successful"
+else
+  echo "❌ Symlinks setup failed"
+  exit 1
 fi
 
 echo "========================================"
 echo "  Installation complete!"
-echo "  Please restart your shell or run: exec zsh"
-echo "  Then open tmux and press C-Space I to install tmux plugins"
+echo "  Symlinks created in $HOME"
 echo "========================================"
