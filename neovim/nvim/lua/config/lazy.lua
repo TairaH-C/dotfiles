@@ -11,7 +11,16 @@ if not vim.uv.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("plugins", {
+local ok, lazy = pcall(require, "lazy")
+if not ok then
+  package.path = lazypath .. "/lua/?.lua;" .. lazypath .. "/lua/?/init.lua;" .. package.path
+  ok, lazy = pcall(require, "lazy")
+  if not ok then
+    error(lazy)
+  end
+end
+
+lazy.setup("plugins", {
   defaults = { lazy = true },
   install = { colorscheme = { "catppuccin" } },
   checker = { enabled = true, notify = false },

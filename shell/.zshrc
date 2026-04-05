@@ -10,14 +10,11 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 # -- PATH ----------------------------------------------------------------------
 
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/go/bin:$PATH"
-export PATH="/usr/local/go/bin:$PATH"
-[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
 # -- Zinit (plugin manager) ----------------------------------------------------
 
-ZINIT_HOME="${XDG_DATA_HOME}/zinit/zinit.git"
+ZINIT_HOME="${XDG_DATA_HOME}/zinit"
 if [[ -f "${ZINIT_HOME}/zinit.zsh" ]]; then
   source "${ZINIT_HOME}/zinit.zsh"
 
@@ -37,8 +34,8 @@ fi
 # -- History -------------------------------------------------------------------
 
 HISTFILE="$HOME/.zsh_history"
-HISTSIZE=50000
-SAVEHIST=50000
+HISTSIZE=10000
+SAVEHIST=10000
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS
@@ -76,7 +73,7 @@ export FZF_DEFAULT_OPTS=" \
   --color=selected-bg:#45475a \
   --multi"
 
-export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
 

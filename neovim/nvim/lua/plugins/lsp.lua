@@ -11,10 +11,8 @@ return {
         "prettierd",
         "shfmt",
         "eslint_d",
-        "gofumpt",
         "debugpy",
         "js-debug-adapter",
-        "delve",
       },
     },
     config = function(_, opts)
@@ -46,11 +44,9 @@ return {
     opts = {
       ensure_installed = {
         "lua_ls",
-        "pyright",
+        "basedpyright",
         "ruff",
         "ts_ls",
-        "rust_analyzer",
-        "gopls",
         "jsonls",
         "yamlls",
         "bashls",
@@ -59,7 +55,7 @@ return {
     },
   },
 
-  -- LSP config
+  -- LSP config (using vim.lsp.config API for Neovim 0.11+)
   {
     "neovim/nvim-lspconfig",
     event = { "BufReadPre", "BufNewFile" },
@@ -69,28 +65,30 @@ return {
       "saghen/blink.cmp",
     },
     config = function()
-      local lspconfig = require("lspconfig")
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-      local on_attach = function(_, bufnr)
-        local map = function(keys, func, desc)
-          vim.keymap.set("n", keys, func, { buffer = bufnr, desc = "LSP: " .. desc })
-        end
-        map("gd", vim.lsp.buf.definition, "Go to definition")
-        map("gr", vim.lsp.buf.references, "References")
-        map("gI", vim.lsp.buf.implementation, "Go to implementation")
-        map("gy", vim.lsp.buf.type_definition, "Go to type definition")
-        map("gD", vim.lsp.buf.declaration, "Go to declaration")
-        map("K", vim.lsp.buf.hover, "Hover")
-        map("gK", vim.lsp.buf.signature_help, "Signature help")
-        map("<leader>cr", vim.lsp.buf.rename, "Rename")
-        map("<leader>ca", vim.lsp.buf.code_action, "Code action")
-      end
+      -- LSP keymaps via LspAttach autocmd
+      vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("dotfiles_lsp_attach", { clear = true }),
+        callback = function(event)
+          local map = function(keys, func, desc)
+            vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+          end
+          map("gd", vim.lsp.buf.definition, "Go to definition")
+          map("gr", vim.lsp.buf.references, "References")
+          map("gI", vim.lsp.buf.implementation, "Go to implementation")
+          map("gy", vim.lsp.buf.type_definition, "Go to type definition")
+          map("gD", vim.lsp.buf.declaration, "Go to declaration")
+          map("K", vim.lsp.buf.hover, "Hover")
+          map("gK", vim.lsp.buf.signature_help, "Signature help")
+          map("<leader>cr", vim.lsp.buf.rename, "Rename")
+          map("<leader>ca", vim.lsp.buf.code_action, "Code action")
+        end,
+      })
 
-      -- Pyright
-      lspconfig.pyright.setup({
+      -- BasedPyright
+      vim.lsp.config("basedpyright", {
         capabilities = capabilities,
-        on_attach = on_attach,
         settings = {
           python = {
             analysis = {
@@ -103,19 +101,17 @@ return {
       })
 
       -- Ruff (linting/formatting for Python)
-      lspconfig.ruff.setup({
+      vim.lsp.config("ruff", {
         capabilities = capabilities,
-        on_attach = function(client, bufnr)
-          on_attach(client, bufnr)
+        init_options = { settings = { logLevel = "error" } },
+        on_attach = function(client)
           client.server_capabilities.hoverProvider = false
         end,
-        init_options = { settings = { logLevel = "error" } },
       })
 
       -- Lua LS
-      lspconfig.lua_ls.setup({
+      vim.lsp.config("lua_ls", {
         capabilities = capabilities,
-        on_attach = on_attach,
         settings = {
           Lua = {
             diagnostics = { globals = { "vim" } },
@@ -127,49 +123,18 @@ return {
       })
 
       -- TypeScript
-      lspconfig.ts_ls.setup({
+      vim.lsp.config("ts_ls", {
         capabilities = capabilities,
-        on_attach = on_attach,
-      })
-
-      -- Rust
-      lspconfig.rust_analyzer.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          ["rust-analyzer"] = {
-            checkOnSave = { command = "clippy" },
-            cargo = { allFeatures = true },
-          },
-        },
-      })
-
-      -- Go
-      lspconfig.gopls.setup({
-        capabilities = capabilities,
-        on_attach = on_attach,
-        settings = {
-          gopls = {
-            gofumpt = true,
-            analyses = {
-              unusedparams = true,
-              shadow = true,
-            },
-            staticcheck = true,
-          },
-        },
       })
 
       -- JSON
-      lspconfig.jsonls.setup({
+      vim.lsp.config("jsonls", {
         capabilities = capabilities,
-        on_attach = on_attach,
       })
 
       -- YAML
-      lspconfig.yamlls.setup({
+      vim.lsp.config("yamlls", {
         capabilities = capabilities,
-        on_attach = on_attach,
         settings = {
           yaml = {
             keyOrdering = false,
@@ -178,15 +143,25 @@ return {
       })
 
       -- Bash
-      lspconfig.bashls.setup({
+      vim.lsp.config("bashls", {
         capabilities = capabilities,
-        on_attach = on_attach,
       })
 
       -- TOML
-      lspconfig.taplo.setup({
+      vim.lsp.config("taplo", {
         capabilities = capabilities,
-        on_attach = on_attach,
+      })
+
+      -- Enable all configured servers
+      vim.lsp.enable({
+        "basedpyright",
+        "ruff",
+        "lua_ls",
+        "ts_ls",
+        "jsonls",
+        "yamlls",
+        "bashls",
+        "taplo",
       })
     end,
   },
@@ -219,8 +194,6 @@ return {
         markdown = { "prettierd" },
         html = { "prettierd" },
         css = { "prettierd" },
-        go = { "gofumpt" },
-        rust = { "rustfmt" },
         toml = { "taplo" },
         sh = { "shfmt" },
       },

@@ -45,9 +45,30 @@ opt.encoding = "utf-8"
 opt.fileencoding = "utf-8"
 
 -- Fill chars
-opt.fillchars = { foldopen = "", foldclose = "", fold = " ", foldsep = " ", diff = "╱", eob = " " }
+opt.fillchars = { fold = " ", diff = "╱", eob = " " }
 
 -- Fold
 opt.foldlevel = 99
 opt.foldmethod = "expr"
-opt.foldexpr = "nvim_treesitter#foldexpr()"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+-- Disable unused providers
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python3_provider = 0
+
+-- OSC52 clipboard for Docker/SSH/tmux environments
+if vim.env.SSH_TTY or vim.env.TMUX or os.getenv("container") or vim.uv.fs_stat("/.dockerenv") then
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = {
+      ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+    },
+    paste = {
+      ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+    },
+  }
+end

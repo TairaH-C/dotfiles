@@ -3,10 +3,10 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     lazy = false,
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = { "nvim-tree/nvim-web-devicons", "catppuccin" },
     opts = {
       options = {
-        theme = "catppuccin",
+        theme = "catppuccin-mocha",
         globalstatus = true,
         disabled_filetypes = { statusline = { "dashboard", "alpha" } },
       },

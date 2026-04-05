@@ -1,7 +1,7 @@
 name: devenv
 
 services:
-  dev:
+  devenv:
     build:
       context: ..
       dockerfile: docker/Dockerfile
@@ -35,8 +35,20 @@ services:
     volumes:
       # Workspace (bind mount)
       - type: bind
-        source: "${WORKSPACE_ROOT:-./../..}"
+        source: "${WORKSPACE_ROOT:-~/workspace}"
         target: /home/dev/workspace
+
+      # SSH directory (read-only)
+      - type: bind
+        source: "${HOME}/.ssh"
+        target: /home/dev/.ssh
+        read_only: true
+
+      # GitHub Copilot config (read-only)
+      - type: bind
+        source: "${HOME}/.config/github-copilot"
+        target: /home/dev/.config/github-copilot
+        read_only: true
 
       # SSH agent socket
       - type: bind
@@ -57,12 +69,17 @@ services:
       - nvim-data:/home/dev/.local/share/nvim
       - nvim-state:/home/dev/.local/state/nvim
       - nvim-cache:/home/dev/.cache/nvim
+      - uv-cache:/home/dev/.cache/uv
       - tmux-plugins:/home/dev/.tmux/plugins
       - zsh-plugins:/home/dev/.local/share/zinit
       - zoxide-db:/home/dev/.local/share/zoxide
-      - cargo:/home/dev/.cargo
-      - go-pkg:/home/dev/go
       - claude-state:/home/dev/.claude
+
+      # Entrypoint script (bind mount)
+      - type: bind
+        source: ./entrypoint.sh
+        target: /usr/local/bin/docker-entrypoint.sh
+        read_only: true
 
       # Shell history (bind mount file)
       - type: bind
@@ -72,13 +89,16 @@ services:
     working_dir: /home/dev/workspace
     restart: "no"
 
+    user: "0:0"  # Run as root initially for entrypoint chown
+    entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
+    command: ["su", "-", "dev", "-c", "zsh"]
+
 volumes:
   nvim-data:
   nvim-state:
   nvim-cache:
+  uv-cache:
   tmux-plugins:
   zsh-plugins:
   zoxide-db:
-  cargo:
-  go-pkg:
   claude-state:

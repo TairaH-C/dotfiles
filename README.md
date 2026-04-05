@@ -13,7 +13,6 @@ dotfiles/
 │   └── persist/              # zsh_history, .gitconfig.local
 ├── install.sh                # メインインストーラ
 ├── scripts/
-│   ├── install-packages.sh   # パッケージインストール
 │   └── setup-symlinks.sh     # シンボリックリンク作成
 ├── git/
 │   └── .gitconfig            # delta 統合・Catppuccin テーマ
@@ -27,7 +26,7 @@ dotfiles/
 │       └── lua/
 │           ├── config/
 │           │   ├── options.lua    # エディタオプション
-│           │   ├── keymaps.lua    # LazyVim 準拠キーマップ
+│           │   ├── keymaps.lua    # Vim 標準準拠キーマップ
 │           │   ├── autocmds.lua   # ヤンクハイライト・カーソル復帰等
 │           │   └── lazy.lua       # lazy.nvim ブートストラップ
 │           └── plugins/
@@ -36,7 +35,7 @@ dotfiles/
 │               ├── editor.lua     # flash, mini.*, todo-comments, persistence
 │               ├── coding.lua     # blink.cmp + copilot
 │               ├── lsp.lua        # 10 言語 LSP + conform + nvim-lint
-│               ├── treesitter.lua # 22 言語 + textobjects + context
+│               ├── treesitter.lua # 22 言語 + textobjects
 │               ├── telescope.lua  # fzf-native 拡張
 │               ├── git.lua        # gitsigns + lazygit
 │               ├── debug.lua      # nvim-dap + dap-ui
@@ -263,7 +262,7 @@ tmux-resurrect + tmux-continuum により、15 分ごとにセッションが自
 
 | 言語 | LSP サーバー | フォーマッタ |
 |------|-------------|-------------|
-| Python | pyright + ruff | ruff_format |
+| Python | basedpyright + ruff | ruff_format |
 | TypeScript/JavaScript | ts_ls | prettierd |
 | Rust | rust_analyzer | rustfmt |
 | Go | gopls | gofumpt |

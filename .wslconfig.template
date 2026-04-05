@@ -1,0 +1,60 @@
+# WSL2 Configuration Template
+# 
+# Copy this file to ~/.wslconfig (user home directory)
+# After copying, restart WSL with: wsl --shutdown
+# 
+# For detailed documentation, see:
+# https://learn.microsoft.com/en-us/windows/wsl/wsl-config
+#
+
+[wsl2]
+
+# Maximum amount of memory to allocate to WSL2 virtual machine
+# Adjust based on your system RAM:
+# - 8GB for machines with 16GB RAM (half available)
+# - 6GB for machines with 12GB RAM
+# - 16GB for machines with 32GB RAM
+# The VM will use only what it needs up to this limit
+memory=8GB
+
+# Amount of swap space available to WSL2
+# Swap is used when physical memory is exhausted
+# Typical: 1-2x your memory allocation
+swap=4GB
+
+# Number of virtual processors available to WSL2
+# Leave 1-2 processors free for host system
+# Typical: processor_count - 1 or - 2
+processors=4
+
+# Maximum size of WSL2 virtual hard disk (VHDX file)
+# This does NOT shrink existing VHDXs, only limits future growth
+# Adjust based on your Docker/development needs:
+# - 50GB for light development
+# - 100GB for active Docker usage with multiple images
+# - 200GB+ for large datasets or heavy Docker usage
+# To reclaim space, use PowerShell script: disk-management.ps1
+diskSize=100GB
+
+# Kernel command line parameters
+# Usually not needed; uncomment only if troubleshooting
+# kernelCommandLine=
+
+# Enable nested virtualization (for running Docker/KVM inside WSL2)
+# Only needed if running container engines inside WSL2
+# nestedVirtualization=true
+
+# VM memory softlimit (experimental)
+# Can help reduce memory usage but may impact performance
+# pageReporting=true
+
+# Uncomment to use WSL1 instead of WSL2 for this distribution
+# version=1
+
+# Hostname for WSL2 VM (visible in prompt/system)
+# Default is "hostname"
+# hostname=devbox
+
+# Whether to enable systemd support in WSL2
+# Requires Windows 11 Build 22621 or later
+systemd=true

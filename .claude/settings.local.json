@@ -1,0 +1,28 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(cd:*)",
+      "Bash(uv run python:*)",
+      "Bash(uv add:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run:*)",
+      "Bash(grep:*)",
+      "Bash(python:*)",
+      "mcp__drawio__open_drawio_xml",
+      "Bash(az repos:*)",
+      "Bash(az extension:*)",
+      "WebFetch(domain:flet.dev)",
+      "WebFetch(domain:docs.flet.dev)",
+      "Bash(docker image:*)",
+      "Bash(docker history:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker info:*)"
+    ]
+  },
+  "outputStyle": "default"
+}
