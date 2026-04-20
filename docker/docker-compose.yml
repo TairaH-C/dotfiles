@@ -1,13 +1,13 @@
 name: devenv
 
 services:
-  devenv:
+  dev:
     build:
       context: ..
       dockerfile: docker/Dockerfile
     image: devenv:latest
     container_name: devenv
-    hostname: devenv
+    hostname: dev
 
     stdin_open: true
     tty: true
@@ -40,13 +40,13 @@ services:
 
       # SSH directory (read-only)
       - type: bind
-        source: "${HOME}/.ssh"
+        source: "${HOME:-${USERPROFILE}}/.ssh"
         target: /home/dev/.ssh
         read_only: true
 
       # GitHub Copilot config (read-only)
       - type: bind
-        source: "${HOME}/.config/github-copilot"
+        source: "${HOME:-${USERPROFILE}}/.config/github-copilot"
         target: /home/dev/.config/github-copilot
         read_only: true
 

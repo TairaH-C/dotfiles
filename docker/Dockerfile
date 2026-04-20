@@ -32,13 +32,12 @@ ARG DELTA_VERSION=0.19.2
 ARG LAZYGIT_VERSION=0.46.1
 ARG LAZYGIT_FALLBACK_VERSION=0.46.0
 ARG NODE_VERSION=22.22.2
-ARG CLAUDE_CODE_VERSION=2.1.91
 ARG OPENCODE_VERSION=1.3.13
 ARG OH_MY_OPENAGENTS_PACKAGE=oh-my-opencode
 ARG OH_MY_OPENAGENTS_VERSION=3.14.0
 ARG ZINIT_COMMIT=6c9ac1c4bc9bcaede64cb473759ac2c5b9187f98
 
-ENV LANG=C.UTF-8
+ENV LANG=en_US.UTF-8
 ENV TERM=xterm-256color
 ENV SHELL=/usr/bin/zsh
 
@@ -61,7 +60,7 @@ RUN set -eux; \
       fd-find=${FD_FIND_VERSION} \
       ripgrep=${RIPGREP_VERSION} \
       bat=${BAT_VERSION}; \
-    locale-gen C.UTF-8; \
+    locale-gen C.UTF-8 en_US.UTF-8; \
     rm -rf /var/lib/apt/lists/*
 
 # Debian command compatibility
@@ -113,11 +112,13 @@ RUN set -eux; \
     fi; \
     rm -rf /var/lib/apt/lists/*
 
+# ---- Claude Code (official installer) ----
+RUN curl -fsSL https://claude.ai/install.sh | bash
+
 # ---- AI tools (npm global, pinned) ----
 RUN set -eux; \
     for i in 1 2 3; do \
       if npm install -g \
-        "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
         "opencode-ai@${OPENCODE_VERSION}" \
         "${OH_MY_OPENAGENTS_PACKAGE}@${OH_MY_OPENAGENTS_VERSION}"; then \
         break; \
