@@ -46,7 +46,92 @@ dotfiles/
     └── config.yml             # Catppuccin + delta pager
 ```
 
-## セットアップ
+## Windows 初期セットアップ
+
+新しい Windows 11 マシンで開発環境を構築する手順。`scripts/windows-setup.ps1` が
+winget 経由で主要ツールを自動インストールする。可能な限りユーザスコープで入れるため、
+アップデート時に管理者権限を要求されない。
+
+### 1. 前提: winget
+
+Windows 11 には標準で winget (App Installer) が同梱されている。古い場合は
+Microsoft Store から "App Installer" を更新する。
+
+### 2. スクリプト実行
+
+PowerShell を開き (管理者でなくて構わない):
+
+```powershell
+# リポジトリルートで実行
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1
+
+# 管理者権限が必要なパッケージをスキップする場合
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1 -SkipAdminPackages
+
+# 何がインストールされるかだけ確認
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1 -DryRun
+```
+
+管理者権限が必要なものは管理者 PowerShell から再実行すればまとめて入る。
+
+### 3. インストール対象
+
+| ソフトウェア | winget ID | スコープ | 備考 |
+|-------------|-----------|----------|------|
+| Microsoft PowerToys | `Microsoft.PowerToys` | user | |
+| Visual Studio Code | `Microsoft.VisualStudioCode` | user | User Installer |
+| Azure Storage Explorer | `Microsoft.Azure.StorageExplorer` | user | |
+| uv | `astral-sh.uv` | user | Python パッケージマネージャ |
+| Git | `Git.Git` | user → machine | |
+| Node.js LTS | `OpenJS.NodeJS.LTS` | user → machine | |
+| Go | `GoLang.Go` | user → machine | |
+| Zoom | `Zoom.Zoom` | user | |
+| Azure CLI | `Microsoft.AzureCLI` | machine | MSI のため要管理者 |
+| Azure Functions Core Tools | `Microsoft.Azure.FunctionsCoreTools` | machine | MSI のため要管理者 |
+| SQL Server Management Studio | `Microsoft.SQLServerManagementStudio` | machine | 要管理者 |
+| Rancher Desktop | `SUSE.RancherDesktop` | machine | 要管理者 (WSL 統合・サービス登録) |
+| Microsoft 365 (Office) | `Microsoft.Office` | machine | 要管理者 |
+
+### 4. 手動セットアップが必要な項目
+
+自動化できない or 後続の手動操作が必要なもの:
+
+#### WSL2 の有効化
+
+管理者 PowerShell で:
+
+```powershell
+wsl --install
+```
+
+実行後 Windows を再起動。既定で Ubuntu がインストールされる。別ディストリを使うなら
+`wsl --install -d <Distro>`。
+
+#### Rancher Desktop の初期設定
+
+1. 初回起動時に "Container Engine" で **dockerd (moby)** を選択
+2. "WSL Integration" で使用する WSL ディストリを有効化
+3. 必要に応じて CPU / メモリ / ディスクサイズを調整
+
+#### Microsoft 365 のライセンス認証
+
+インストール完了後、任意の Office アプリを起動して組織アカウントでサインイン。
+
+#### Git のユーザ情報
+
+```powershell
+git config --global user.name  "Your Name"
+git config --global user.email "you@example.com"
+```
+
+#### PowerToys の推奨設定
+
+初回起動後に FancyZones / PowerToys Run / Keyboard Manager を有効化。設定内容は
+各自の好みで調整する。
+
+---
+
+## WSL セットアップ (開発環境本体)
 
 ### 前提条件
 
