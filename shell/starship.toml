@@ -1,33 +1,123 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+scan_timeout = 35
+command_timeout = 700
+
+palette = "gruvbox_dark"
+
 format = """
-$container\
+[](fg:bg3)\
+$username\
 $hostname\
+[](bg:yellow fg:bg3)\
 $directory\
+[](bg:aqua fg:yellow)\
 $git_branch\
 $git_status\
-$python\
-$nodejs\
-$php\
+[](bg:blue fg:aqua)\
+$nodejs$python$rust$golang$php$java\
+[](fg:blue)\
+$fill\
+$cmd_duration\
+$time\
+$line_break\
 $character"""
 
-[directory]
-truncation_length = 3
-truncate_to_repo = true
+[palettes.gruvbox_dark]
+col_fg     = "#fbf1c7"
+col_bg     = "#282828"
+col_bg1    = "#3c3836"
+col_bg3    = "#665c54"
+col_gray   = "#928374"
+col_red    = "#cc241d"
+col_green  = "#98971a"
+col_yellow = "#d79921"
+col_blue   = "#458588"
+col_aqua   = "#689d6a"
+col_orange = "#d65d0e"
+fg     = "#fbf1c7"
+bg     = "#282828"
+bg3    = "#665c54"
+gray   = "#928374"
+red    = "#cc241d"
+green  = "#98971a"
+yellow = "#d79921"
+blue   = "#458588"
+aqua   = "#689d6a"
+orange = "#d65d0e"
 
-[git_branch]
-format = "[$branch]($style) "
-
-[git_status]
-format = '([$all_status$ahead_behind]($style) )'
+[username]
+show_always = true
+format = "[ $user ](bg:bg3 fg:fg bold)"
 
 [hostname]
-ssh_only = false
-format = "[$hostname]($style) "
-style = "bold yellow"
+ssh_only = true
+format = "[@$hostname ](bg:bg3 fg:fg bold)"
 
-[container]
-format = "[$symbol$name]($style) "
-style = "bold blue"
+[directory]
+format = "[  $path ](bg:yellow fg:bg bold)"
+truncation_length = 3
+truncate_to_repo = true
+truncation_symbol = "…/"
+home_symbol = "~"
+
+[git_branch]
+format = "[  $branch ](bg:aqua fg:bg bold)"
+symbol = ""
+
+[git_status]
+format = "[$all_status$ahead_behind ](bg:aqua fg:bg bold)"
+ahead      = "⇡${count}"
+behind     = "⇣${count}"
+diverged   = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked  = "?${count}"
+stashed    = "*"
+modified   = "!${count}"
+staged     = "+${count}"
+renamed    = "»${count}"
+deleted    = "✘${count}"
+conflicted = "="
+
+[nodejs]
+format = "[  $version ](bg:blue fg:fg)"
+symbol = ""
+
+[python]
+format = "[  $version ](bg:blue fg:fg)"
+symbol = ""
+
+[rust]
+format = "[  $version ](bg:blue fg:fg)"
+symbol = ""
+
+[golang]
+format = "[  $version ](bg:blue fg:fg)"
+symbol = ""
+
+[php]
+format = "[  $version ](bg:blue fg:fg)"
+symbol = ""
+
+[java]
+format = "[  $version ](bg:blue fg:fg)"
+symbol = ""
+
+[fill]
+symbol = " "
+
+[cmd_duration]
+min_time = 2_000
+format = "[  $duration ](fg:yellow)"
+
+[time]
+disabled = false
+format = "[  $time ](fg:gray)"
+time_format = "%H:%M"
 
 [character]
-success_symbol = "[>](green)"
-error_symbol = "[>](red)"
+success_symbol = "[❯](bold green)"
+error_symbol   = "[❯](bold red)"
+vimcmd_symbol  = "[❮](bold green)"
+
+[container]
+disabled = true

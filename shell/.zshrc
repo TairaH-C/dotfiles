@@ -12,6 +12,10 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
 
+# -- eza -----------------------------------------------------------------------
+
+export EZA_OPTS="--git-ignore"
+
 # -- Zinit (plugin manager) ----------------------------------------------------
 
 ZINIT_HOME="${XDG_DATA_HOME}/zinit"

@@ -8,9 +8,9 @@ alias ....='cd ../../..'
 
 # ls -> eza
 if command -v eza &>/dev/null; then
-  alias ls='eza --icons'
-  alias ll='eza -lah --icons --git'
-  alias lt='eza --tree --icons --level=2'
+  alias ls='eza --icons --git-ignore'
+  alias ll='eza -lah --icons --git --git-ignore'
+  alias lt='eza --tree --icons --level=2 --git-ignore'
   alias la='eza -a --icons'
 else
   alias ll='ls -lAh --color=auto'
