@@ -193,4 +193,19 @@ return {
 
   -- Icons
   { "nvim-tree/nvim-web-devicons", lazy = true },
+
+  -- Markdown rendering in buffers
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    ft = { "markdown", "Avante", "copilot-chat" },
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+    opts = {
+      file_types = { "markdown", "Avante", "copilot-chat" },
+      completions = { lsp = { enabled = true } },
+      render_modes = true,
+    },
+    keys = {
+      { "<leader>um", "<cmd>RenderMarkdown toggle<cr>", desc = "Toggle render-markdown" },
+    },
+  },
 }
