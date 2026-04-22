@@ -49,8 +49,16 @@ dotfiles/
 ## Windows 初期セットアップ
 
 新しい Windows 11 マシンで開発環境を構築する手順。`scripts/windows-setup.ps1` が
-winget 経由で主要ツールを自動インストールする。可能な限りユーザスコープで入れるため、
-アップデート時に管理者権限を要求されない。
+winget 経由で主要ツールを自動インストールする。
+
+**実行モデル**: 通常 (非管理者) PowerShell から起動する。スクリプトは内部で
+
+1. 管理者権限が必要なパッケージを **優先して** バッチ処理 (1 回の UAC で全部入る)
+2. その後ユーザースコープのパッケージを順次インストール
+
+の順で動く。winget は管理者シェルだと PATH に乗らない / 実行できないことがあるため、
+ユーザーセッションで解決した `winget.exe` のフルパスを昇格された子プロセスに渡す。
+そのため「管理者 PowerShell には winget がない」という症状を回避できる。
 
 ### 1. 前提: winget
 
@@ -59,38 +67,50 @@ Microsoft Store から "App Installer" を更新する。
 
 ### 2. スクリプト実行
 
-PowerShell を開き (管理者でなくて構わない):
+**通常の (管理者ではない) PowerShell** を開き:
 
 ```powershell
 # リポジトリルートで実行
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1
-
-# 管理者権限が必要なパッケージをスキップする場合
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1 -SkipAdminPackages
-
-# 何がインストールされるかだけ確認
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1 -DryRun
 ```
 
-管理者権限が必要なものは管理者 PowerShell から再実行すればまとめて入る。
+実行直後に UAC ダイアログが出るので承認する。新しい昇格 PowerShell ウィンドウが開き、
+管理者必須パッケージ (Office / Rancher Desktop / Azure CLI / Functions Core Tools / SSMS)
+を順番にインストールする。終わったら任意のキーで閉じると、元のウィンドウでユーザー
+スコープのインストールが続行する。
+
+オプション:
+
+```powershell
+# UAC を出さず、管理者必須パッケージは全てスキップ
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1 -SkipAdminPackages
+
+# 何がインストールされるかだけ確認 (UAC は出るが winget は走らない)
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1 -DryRun
+
+# 既にインストール済みでも再インストールを試みる
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1 -Force
+```
 
 ### 3. インストール対象
 
-| ソフトウェア | winget ID | スコープ | 備考 |
-|-------------|-----------|----------|------|
-| Microsoft PowerToys | `Microsoft.PowerToys` | user | |
-| Visual Studio Code | `Microsoft.VisualStudioCode` | user | User Installer |
-| Azure Storage Explorer | `Microsoft.Azure.StorageExplorer` | user | |
-| uv | `astral-sh.uv` | user | Python パッケージマネージャ |
-| Git | `Git.Git` | user → machine | |
-| Node.js LTS | `OpenJS.NodeJS.LTS` | user → machine | |
-| Go | `GoLang.Go` | user → machine | |
-| Zoom | `Zoom.Zoom` | user | |
-| Azure CLI | `Microsoft.AzureCLI` | machine | MSI のため要管理者 |
-| Azure Functions Core Tools | `Microsoft.Azure.FunctionsCoreTools` | machine | MSI のため要管理者 |
-| SQL Server Management Studio | `Microsoft.SQLServerManagementStudio` | machine | 要管理者 |
-| Rancher Desktop | `SUSE.RancherDesktop` | machine | 要管理者 (WSL 統合・サービス登録) |
-| Microsoft 365 (Office) | `Microsoft.Office` | machine | 要管理者 |
+優先度順 (管理者必須が先):
+
+| 優先度 | ソフトウェア | winget ID | スコープ | 備考 |
+|:------:|-------------|-----------|----------|------|
+| ★ | Microsoft 365 (Office) | `Microsoft.Office` | machine | 要管理者 |
+| ★ | Rancher Desktop | `SUSE.RancherDesktop` | machine | 要管理者 (WSL 統合・サービス登録) |
+| ★ | Azure CLI | `Microsoft.AzureCLI` | machine | MSI のため要管理者 |
+| ★ | Azure Functions Core Tools | `Microsoft.Azure.FunctionsCoreTools` | machine | MSI のため要管理者 |
+| ★ | SQL Server Management Studio | `Microsoft.SQLServerManagementStudio` | machine | 要管理者 |
+|   | Microsoft PowerToys | `Microsoft.PowerToys` | user | |
+|   | Visual Studio Code | `Microsoft.VisualStudioCode` | user | User Installer |
+|   | Azure Storage Explorer | `Microsoft.Azure.StorageExplorer` | user | |
+|   | uv | `astral-sh.uv` | user | Python パッケージマネージャ |
+|   | Git | `Git.Git` | user | |
+|   | Node.js LTS | `OpenJS.NodeJS.LTS` | user | |
+|   | Go | `GoLang.Go` | user | |
+|   | Zoom | `Zoom.Zoom` | user | |
 
 ### 4. 手動セットアップが必要な項目
 
