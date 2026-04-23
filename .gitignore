@@ -18,7 +18,9 @@ docker/.env
 docker/persist/zsh_history
 docker/persist/.gitconfig.local
 
-# npm (not a Node.js project; ignore stray package files)
-package.json
-package-lock.json
+# npm: keep package.json / package-lock.json out of the repo *root* only
+# (this dotfiles tree is not a Node project), but allow them in any
+# subdirectory that genuinely is one. node_modules/ stays globally ignored.
+/package.json
+/package-lock.json
 node_modules/

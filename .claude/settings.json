@@ -1,7 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "language": "japanese",
-  "enabledMcpjsonServers": ["drawio"],
   "permissions": {
     "allow": [
       "Bash(uv run ruff check *)",

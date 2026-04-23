@@ -6,12 +6,12 @@
   },
   "mounts": [
     "source=${localEnv:HOME}/.ssh,target=/home/dev/.ssh,type=bind,readonly",
-    "source=${localEnv:HOME}/.claude,target=/home/dev/.claude,type=bind",
     "source=${localEnv:HOME}/.config/github-copilot,target=/home/dev/.config/github-copilot,type=bind,readonly",
-    "source=${localEnv:HOME}/workspace,target=/home/dev/workspace,type=bind"
+    "source=${localEnv:HOME}/workspace,target=/home/dev/workspace,type=bind",
+    "source=devenv-claude-state,target=/home/dev/.claude,type=volume"
   ],
   "remoteUser": "dev",
-  "postCreateCommand": "bash ~/dotfiles/install.sh --docker",
+  "postCreateCommand": "bash /home/dev/workspace/dotfiles/install.sh --docker",
   "containerEnv": {
     "TERM": "xterm-256color"
   },

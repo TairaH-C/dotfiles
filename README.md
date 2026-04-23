@@ -1,6 +1,6 @@
 # dotfiles
 
-Docker 上で完結する Neovim + tmux + zsh 開発環境。Catppuccin Mocha で統一されたモダン CLI 構成。
+Docker 上で完結する Neovim + tmux + zsh 開発環境。エディタ・tmux・lazygit は Catppuccin Mocha、starship プロンプトは Gruvbox Powerline で統一されたモダン CLI 構成。
 
 ## 構成
 
@@ -19,7 +19,7 @@ dotfiles/
 ├── shell/
 │   ├── .zshrc                # zinit + zoxide + fzf (Catppuccin)
 │   ├── .aliases              # eza / bat / rg / fd エイリアス
-│   └── starship.toml         # プロンプト設定
+│   └── starship.toml         # Gruvbox Powerline プロンプト
 ├── neovim/
 │   └── nvim/
 │       ├── init.lua           # 4 行の require のみ

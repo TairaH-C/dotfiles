@@ -40,7 +40,8 @@ alias lg='lazygit'
 
 # -- AI tools ------------------------------------------------------------------
 
-alias oc='opencode'
+# `oc` is intentionally NOT used (collides with the OpenShift CLI).
+alias opc='opencode'
 
 # -- Safety --------------------------------------------------------------------
 

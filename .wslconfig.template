@@ -55,6 +55,9 @@ diskSize=100GB
 # Default is "hostname"
 # hostname=devbox
 
-# Whether to enable systemd support in WSL2
-# Requires Windows 11 Build 22621 or later
-systemd=true
+# NOTE: systemd is NOT a [wsl2] key. To enable systemd, edit
+# /etc/wsl.conf inside the target distro and add:
+#   [boot]
+#   systemd=true
+# Then run `wsl --shutdown` from PowerShell. Requires Windows 11
+# Build 22621+ (or recent WSL kernel).
