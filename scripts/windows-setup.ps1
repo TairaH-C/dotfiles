@@ -56,7 +56,10 @@ $packages = @(
     @{ Id = 'Microsoft.AzureCLI';                  Name = 'Azure CLI';                     RequiresAdmin = $true  }
     @{ Id = 'Microsoft.Azure.FunctionsCoreTools';  Name = 'Azure Functions Core Tools';    RequiresAdmin = $true  }
     @{ Id = 'Microsoft.SQLServerManagementStudio'; Name = 'SQL Server Management Studio';  RequiresAdmin = $true  }
+    @{ Id = 'Microsoft.PowerShell';                Name = 'PowerShell 7';                  RequiresAdmin = $true  }
+    @{ Id = 'yuru7.PlemolJP';                      Name = 'PlemolJP (Nerd Font)';          RequiresAdmin = $true  }
     @{ Id = 'Microsoft.PowerToys';                 Name = 'Microsoft PowerToys';           RequiresAdmin = $false }
+    @{ Id = 'Microsoft.WindowsTerminal';           Name = 'Windows Terminal';              RequiresAdmin = $false }
     @{ Id = 'Microsoft.VisualStudioCode';          Name = 'Visual Studio Code';            RequiresAdmin = $false }
     @{ Id = 'Microsoft.Azure.StorageExplorer';     Name = 'Azure Storage Explorer';        RequiresAdmin = $false }
     @{ Id = 'astral-sh.uv';                        Name = 'uv (Python package manager)';   RequiresAdmin = $false }

@@ -6,35 +6,24 @@ alias ....='cd ../../..'
 
 # -- Modern CLI replacements ---------------------------------------------------
 
-# ls -> eza
+# ls -> eza (drop-in compatible)
 if command -v eza &>/dev/null; then
-  alias ls='eza --icons --git-ignore'
-  alias ll='eza -lah --icons --git --git-ignore'
+  alias ls='eza --icons'
+  alias ll='eza -lah --icons --git'
   alias lt='eza --tree --icons --level=2 --git-ignore'
   alias la='eza -a --icons'
 else
   alias ll='ls -lAh --color=auto'
 fi
 
-# cd -> zoxide
-if command -v zoxide &>/dev/null; then
-  alias cd='z'
-fi
-
-# cat -> bat
+# cat -> bat (auto-detects TTY; safe in pipes)
 if command -v bat &>/dev/null; then
   alias cat='bat --paging=never'
 fi
 
-# grep -> ripgrep
-if command -v rg &>/dev/null; then
-  alias grep='rg'
-fi
-
-# find -> fd
-if command -v fd &>/dev/null; then
-  alias find='fd'
-fi
+# NOTE: grep / find / cd are NOT aliased intentionally.
+# Overriding them breaks scripts and muscle memory (different flags).
+# Use `rg` / `fd` / `z` directly — they are in PATH.
 
 # -- Editors -------------------------------------------------------------------
 

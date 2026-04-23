@@ -34,7 +34,7 @@ dotfiles/
 │               ├── ui.lua         # lualine, bufferline, noice, alpha, ibl
 │               ├── editor.lua     # flash, mini.*, todo-comments, persistence
 │               ├── coding.lua     # blink.cmp + copilot
-│               ├── lsp.lua        # 10 言語 LSP + conform + nvim-lint
+│               ├── lsp.lua        # 8 言語 LSP + conform + nvim-lint
 │               ├── treesitter.lua # 22 言語 + textobjects
 │               ├── telescope.lua  # fzf-native 拡張
 │               ├── git.lua        # gitsigns + lazygit
@@ -103,7 +103,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts\windows-setup.ps1 -F
 | ★ | Azure CLI | `Microsoft.AzureCLI` | machine | MSI のため要管理者 |
 | ★ | Azure Functions Core Tools | `Microsoft.Azure.FunctionsCoreTools` | machine | MSI のため要管理者 |
 | ★ | SQL Server Management Studio | `Microsoft.SQLServerManagementStudio` | machine | 要管理者 |
+| ★ | PowerShell 7 | `Microsoft.PowerShell` | machine | MSI のため要管理者 |
+| ★ | PlemolJP (Nerd Font) | `yuru7.PlemolJP` | machine | 日本語 + アイコン対応フォント。システム font に登録するため要管理者 |
 |   | Microsoft PowerToys | `Microsoft.PowerToys` | user | |
+|   | Windows Terminal | `Microsoft.WindowsTerminal` | user | OSC52 クリップボード・フォント切替 |
 |   | Visual Studio Code | `Microsoft.VisualStudioCode` | user | User Installer |
 |   | Azure Storage Explorer | `Microsoft.Azure.StorageExplorer` | user | |
 |   | uv | `astral-sh.uv` | user | Python パッケージマネージャ |
@@ -148,6 +151,14 @@ git config --global user.email "you@example.com"
 
 初回起動後に FancyZones / PowerToys Run / Keyboard Manager を有効化。設定内容は
 各自の好みで調整する。
+
+#### Windows Terminal のフォント設定
+
+`Microsoft.WindowsTerminal` インストール後、**Settings > Profiles > Defaults >
+Appearance > Font face** を `PlemolJP Console NF` (または好みの PlemolJP 系バリアント)
+に変更する。Nerd Font 版でないと eza / starship のアイコンが豆腐になる。
+
+「Allow OSC 52 clipboard access」も Actions から有効にする (OSC 52 クリップボード連携)。
 
 ---
 
@@ -369,8 +380,6 @@ tmux-resurrect + tmux-continuum により、15 分ごとにセッションが自
 |------|-------------|-------------|
 | Python | basedpyright + ruff | ruff_format |
 | TypeScript/JavaScript | ts_ls | prettierd |
-| Rust | rust_analyzer | rustfmt |
-| Go | gopls | gofumpt |
 | Lua | lua_ls | stylua |
 | JSON | jsonls | prettierd |
 | YAML | yamlls | prettierd |
@@ -421,11 +430,10 @@ GitHub Copilot を使用する場合は、コンテナ内で `:Copilot auth` を
 | `nvim-data` | `~/.local/share/nvim` | lazy.nvim プラグイン + Mason LSP サーバー |
 | `nvim-state` | `~/.local/state/nvim` | undo 履歴, shada |
 | `nvim-cache` | `~/.cache/nvim` | treesitter パーサー, lazy キャッシュ |
+| `uv-cache` | `~/.cache/uv` | uv の Python パッケージキャッシュ |
 | `tmux-plugins` | `~/.tmux/plugins` | TPM プラグイン |
 | `zsh-plugins` | `~/.local/share/zinit` | zinit プラグインキャッシュ |
 | `zoxide-db` | `~/.local/share/zoxide` | zoxide 頻度データベース |
-| `cargo` | `~/.cargo` | Rust ツールチェーン |
-| `go-pkg` | `~/go` | Go パッケージ |
 | `claude-state` | `~/.claude` | Claude Code 認証・設定 |
 
 `docker compose build` でイメージを再ビルドしても、これらの volume は保持される。

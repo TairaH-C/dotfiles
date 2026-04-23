@@ -10,18 +10,18 @@ echo "==> Setting up symlinks..."
 create_symlink() {
   local source="$1"
   local target="$2"
-  
-  # Backup existing file/directory if it exists and is not a symlink
-  if [[ -e "$target" ]] || [[ -L "$target" ]]; then
-    if [[ ! -L "$target" ]]; then
-      echo "  → Backing up $target to ${target}.bak"
-      mv "$target" "${target}.bak"
-    else
-      rm "$target"
-    fi
+
+  if [[ -L "$target" ]]; then
+    # Already a symlink — replace unconditionally (idempotent)
+    rm "$target"
+  elif [[ -e "$target" ]]; then
+    # Real file/dir exists. Use timestamped backup so repeated runs
+    # never clobber an earlier .bak (which would lose the original).
+    local backup="${target}.bak.$(date +%Y%m%d-%H%M%S)"
+    echo "  → Backing up $target to $backup"
+    mv "$target" "$backup"
   fi
-  
-  # Create symlink
+
   ln -s "$source" "$target"
   echo "  ✓ $target → $(basename "$source")"
 }

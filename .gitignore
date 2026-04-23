@@ -10,7 +10,15 @@ Thumbs.db
 # Neovim plugin state (managed by lazy.nvim inside container)
 neovim/nvim/lazy-lock.json
 
+# Claude Code (machine-local settings and permission allow-list)
+.claude/settings.local.json
+
 # Docker dev environment
 docker/.env
 docker/persist/zsh_history
 docker/persist/.gitconfig.local
+
+# npm (not a Node.js project; ignore stray package files)
+package.json
+package-lock.json
+node_modules/
