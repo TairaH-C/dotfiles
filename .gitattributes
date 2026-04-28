@@ -1,0 +1,15 @@
+# Normalize all text files to LF on checkout (prevents CRLF issues in containers)
+* text=auto eol=lf
+
+# Explicitly mark shell scripts and configs as text
+*.sh text eol=lf
+*.zsh text eol=lf
+*.bash text eol=lf
+*.conf text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.gitconfig text eol=lf
+*.gitignore text eol=lf
