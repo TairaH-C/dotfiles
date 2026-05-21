@@ -95,6 +95,7 @@ check_command "zoxide" "zoxide"
 check_command "starship" "starship"
 check_command "delta" "delta"
 check_command "lazygit" "lazygit"
+check_command "nb" "nb (note-taking CLI)"
 
 # Python ecosystem
 echo ""

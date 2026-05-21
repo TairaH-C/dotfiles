@@ -37,6 +37,7 @@ ARG OPENCODE_VERSION=1.3.13
 ARG OH_MY_OPENAGENTS_PACKAGE=oh-my-opencode
 ARG OH_MY_OPENAGENTS_VERSION=3.14.0
 ARG ZINIT_COMMIT=6c9ac1c4bc9bcaede64cb473759ac2c5b9187f98
+ARG NB_VERSION=7.25.4
 
 ENV LANG=en_US.UTF-8
 ENV TERM=xterm-256color
@@ -120,6 +121,11 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # ---- Antigravity CLI (official installer) ----
 RUN curl -fsSL https://antigravity.google/cli/install.sh | bash
+
+# ---- nb (minimalist note-taking CLI) ----
+RUN set -eux; \
+    curl -fsSL "https://raw.githubusercontent.com/xwmx/nb/${NB_VERSION}/nb" -o /usr/local/bin/nb; \
+    chmod +x /usr/local/bin/nb
 
 # ---- AI tools (npm global, pinned) ----
 RUN set -eux; \
