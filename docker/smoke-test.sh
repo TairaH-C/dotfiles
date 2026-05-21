@@ -112,6 +112,7 @@ echo ""
 echo "Checking AI tools..."
 check_command "claude" "Claude Code (claude)"
 check_command "opencode" "OpenCode (opencode)"
+check_command "antigravity" "Antigravity CLI (antigravity)"
 
 # Neovim
 echo ""

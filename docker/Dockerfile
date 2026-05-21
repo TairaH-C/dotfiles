@@ -20,6 +20,7 @@ ARG TMUX_VERSION=3.4-1ubuntu0.1
 ARG FD_FIND_VERSION=9.0.0-1
 ARG RIPGREP_VERSION=14.1.0-1
 ARG BAT_VERSION=0.24.0-1build1
+ARG UNIXODBC_VERSION=2.3.12-1ubuntu0.24.04.1
 
 # ---- Tool versions ----
 ARG UV_VERSION=0.6.9
@@ -59,7 +60,9 @@ RUN set -eux; \
       tmux=${TMUX_VERSION} \
       fd-find=${FD_FIND_VERSION} \
       ripgrep=${RIPGREP_VERSION} \
-      bat=${BAT_VERSION}; \
+      bat=${BAT_VERSION} \
+      unixodbc=${UNIXODBC_VERSION} \
+      openssh-client; \
     locale-gen C.UTF-8 en_US.UTF-8; \
     rm -rf /var/lib/apt/lists/*
 
@@ -114,6 +117,9 @@ RUN set -eux; \
 
 # ---- Claude Code (official installer) ----
 RUN curl -fsSL https://claude.ai/install.sh | bash
+
+# ---- Antigravity CLI (official installer) ----
+RUN curl -fsSL https://antigravity.google/cli/install.sh | bash
 
 # ---- AI tools (npm global, pinned) ----
 RUN set -eux; \

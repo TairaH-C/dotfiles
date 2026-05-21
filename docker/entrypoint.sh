@@ -4,6 +4,7 @@ set -euo pipefail
 # Fix volume ownership if running as root (named volumes may be created as root)
 if [ "$(id -u)" = "0" ]; then
   chown -R 1000:1000 \
+    /home/dev/workspace \
     /home/dev/.config \
     /home/dev/.cache \
     /home/dev/.local/state \
@@ -15,6 +16,8 @@ if [ "$(id -u)" = "0" ]; then
     /home/dev/.local/share/zinit \
     /home/dev/.local/share/zoxide \
     /home/dev/.claude \
+    /home/dev/.local/share/claude-code \
+    /home/dev/.local/share/antigravity-cli \
     2>/dev/null || true
 fi
 
@@ -75,6 +78,30 @@ if [[ ! -f "$TPM_MARKER" ]]; then
   mkdir -p "$(dirname "$TPM_MARKER")"
   touch "$TPM_MARKER"
   echo "==> Tmux plugins installed."
+fi
+'
+
+# Claude Code install (first run only) - run as dev user
+su -s /bin/bash dev -c '
+CLAUDE_MARKER="$HOME/.local/share/claude-code/.bootstrap_done"
+if [[ ! -f "$CLAUDE_MARKER" ]]; then
+  echo "==> Installing Claude Code..."
+  curl -fsSL https://claude.ai/install.sh | bash 2>/dev/null || true
+  mkdir -p "$(dirname "$CLAUDE_MARKER")"
+  touch "$CLAUDE_MARKER"
+  echo "==> Claude Code installed."
+fi
+'
+
+# Antigravity CLI install (first run only) - run as dev user
+su -s /bin/bash dev -c '
+ANTIGRAVITY_MARKER="$HOME/.local/share/antigravity-cli/.bootstrap_done"
+if [[ ! -f "$ANTIGRAVITY_MARKER" ]]; then
+  echo "==> Installing Antigravity CLI..."
+  curl -fsSL https://antigravity.google/cli/install.sh | bash 2>/dev/null || true
+  mkdir -p "$(dirname "$ANTIGRAVITY_MARKER")"
+  touch "$ANTIGRAVITY_MARKER"
+  echo "==> Antigravity CLI installed."
 fi
 '
 

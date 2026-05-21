@@ -101,3 +101,7 @@ fi
 if command -v starship &>/dev/null; then
   eval "$(starship init zsh)"
 fi
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/dev/.local/bin:$PATH"

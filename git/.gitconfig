@@ -34,6 +34,8 @@
 
 [alias]
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-
-[include]
-	path = ~/.gitconfig.local
+[safe]
+	directory = /home/dev/workspace/pvpf-promptflow-ae
+	directory = /mnt/c/path/to/your/repo
+[credential]
+	helper = store
