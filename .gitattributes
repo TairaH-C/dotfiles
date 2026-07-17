@@ -13,3 +13,6 @@
 *.md text eol=lf
 *.gitconfig text eol=lf
 *.gitignore text eol=lf
+
+# PowerShell scripts are consumed by Windows PowerShell 5.1 (CRLF-safe)
+*.ps1 text eol=crlf

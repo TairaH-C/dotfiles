@@ -7,16 +7,15 @@ Thumbs.db
 *.swo
 *~
 
-# Neovim plugin state (managed by lazy.nvim inside container)
-neovim/nvim/lazy-lock.json
-
 # Claude Code (machine-local settings and permission allow-list)
 .claude/settings.local.json
 
-# Docker dev environment
+# Docker dev environment (API keys / personal git identity)
 docker/.env
-docker/persist/zsh_history
-docker/persist/.gitconfig.local
+
+# Tool-generated junk (Antigravity CLI writes into cwd)
+.antigravitycli/
+/.gitconfig.local
 
 # npm: keep package.json / package-lock.json out of the repo *root* only
 # (this dotfiles tree is not a Node project), but allow them in any

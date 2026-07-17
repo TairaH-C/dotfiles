@@ -24,17 +24,6 @@ $line_break\
 $character"""
 
 [palettes.gruvbox_dark]
-col_fg     = "#fbf1c7"
-col_bg     = "#282828"
-col_bg1    = "#3c3836"
-col_bg3    = "#665c54"
-col_gray   = "#928374"
-col_red    = "#cc241d"
-col_green  = "#98971a"
-col_yellow = "#d79921"
-col_blue   = "#458588"
-col_aqua   = "#689d6a"
-col_orange = "#d65d0e"
 fg     = "#fbf1c7"
 bg     = "#282828"
 bg3    = "#665c54"

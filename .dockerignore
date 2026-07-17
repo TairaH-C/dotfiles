@@ -1,6 +1,5 @@
 .git
 .claude
-docker/persist/zsh_history
-docker/persist/.gitconfig.local
+.antigravitycli
 docker/.env
 README.md
