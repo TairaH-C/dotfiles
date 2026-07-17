@@ -55,11 +55,15 @@
 
 ## 5. AI 開発支援 (AI Tools)
 
-| ツール               | バージョン | 説明                               |
-| :------------------- | :--------- | :--------------------------------- |
-| **Claude Code**      | 2.1.91     | Anthropic 製の CLI AI アシスタント |
-| **OpenCode**         | 1.3.13     | オープンソースの AI 開発ツール     |
-| **oh-my-openagents** | 3.14.0     | AI エージェント連携ライブラリ      |
+| ツール               | バージョン | 導入方法                                             | 説明                               |
+| :------------------- | :--------- | :--------------------------------------------------- | :--------------------------------- |
+| **Claude Code**      | latest     | bootstrap.sh が初回起動時に home volume へ（自己更新） | Anthropic 製の CLI AI アシスタント |
+| **Antigravity CLI**  | latest     | 同上（バイナリ名は `agy`）                            | Google 製の CLI AI エージェント    |
+| **OpenCode**         | 1.3.13     | イメージに npm global で固定                          | オープンソースの AI 開発ツール     |
+| **oh-my-opencode**   | 3.14.0     | イメージに npm global で固定                          | OpenCode 向けエージェント設定集    |
+| **nb**               | 7.25.4     | イメージに固定                                        | ミニマルなメモ / ノート CLI        |
+
+Claude Code / Antigravity のログイン状態・設定は `devenv_home` volume に永続化される。
 
 ---
 
