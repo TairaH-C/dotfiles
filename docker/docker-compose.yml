@@ -18,22 +18,32 @@ services:
       - seccomp:unconfined
 
     environment:
-      # API keys (from host env or .env file)
+      # API keys (from host env or docker/.env)
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
       GITHUB_TOKEN: "${GITHUB_TOKEN:-}"
 
-      # Terminal
+      # Personal git identity (bootstrap.sh writes ~/.gitconfig.local from these)
+      GIT_USER_NAME: "${GIT_USER_NAME:-}"
+      GIT_USER_EMAIL: "${GIT_USER_EMAIL:-}"
+
+      # Terminal / locale / timezone
       TERM: xterm-256color
       COLORTERM: truecolor
       LANG: en_US.UTF-8
       LC_ALL: en_US.UTF-8
+      TZ: Asia/Tokyo
 
       # SSH agent forwarding
       SSH_AUTH_SOCK: /run/ssh-agent.sock
 
     volumes:
-      # Workspace (bind mount)
+      # Entire home in one named volume: tool binaries, auth state, shell
+      # history, plugins — everything survives container re-creation and
+      # image rebuilds. `docker compose down -v` is a full factory reset.
+      - home:/home/dev
+
+      # Workspace (bind mount from the Windows host)
       - type: bind
         source: "${WORKSPACE_ROOT:-~/workspace}"
         target: /home/dev/workspace
@@ -59,46 +69,26 @@ services:
       # Docker socket (DooD)
       - /var/run/docker.sock:/var/run/docker.sock
 
-      # Git local config (email etc.)
-      - type: bind
-        source: "${GITCONFIG_LOCAL:-./persist/.gitconfig.local}"
-        target: /home/dev/.gitconfig.local
-        read_only: true
-
-      # Persistent tool data (named volumes)
-      - nvim-data:/home/dev/.local/share/nvim
-      - nvim-state:/home/dev/.local/state/nvim
-      - nvim-cache:/home/dev/.cache/nvim
-      - uv-cache:/home/dev/.cache/uv
-      - tmux-plugins:/home/dev/.tmux/plugins
-      - zsh-plugins:/home/dev/.local/share/zinit
-      - zoxide-db:/home/dev/.local/share/zoxide
-      - claude-state:/home/dev/.claude
-
-      # Entrypoint script (bind mount)
+      # Entrypoint / bootstrap scripts (bind mounts: edits take effect on
+      # `docker restart devenv`, no image rebuild needed)
       - type: bind
         source: ./entrypoint.sh
         target: /usr/local/bin/docker-entrypoint.sh
         read_only: true
-
-      # Shell history (bind mount file)
       - type: bind
-        source: ./persist/zsh_history
-        target: /home/dev/.zsh_history
+        source: ./bootstrap.sh
+        target: /usr/local/bin/devenv-bootstrap.sh
+        read_only: true
 
     working_dir: /home/dev/workspace
-    restart: "no"
 
-    user: "0:0"  # Run as root initially for entrypoint chown
+    # Auto-restart after Rancher Desktop / Windows restarts. Safe because all
+    # state lives in the home volume.
+    restart: unless-stopped
+
+    user: "0:0"  # entrypoint fixes ownership, then drops to dev
     entrypoint: ["/usr/local/bin/docker-entrypoint.sh"]
     command: ["su", "-", "dev", "-c", "zsh"]
 
 volumes:
-  nvim-data:
-  nvim-state:
-  nvim-cache:
-  uv-cache:
-  tmux-plugins:
-  zsh-plugins:
-  zoxide-db:
-  claude-state:
+  home:

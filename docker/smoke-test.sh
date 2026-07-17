@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
-# Build verification script for Dev Container
+# Verification script for the devenv container
 # Checks existence of all CLI tools and validates critical components
 
 # Run validations as dev user when invoked as root (docker exec default)
 if [[ "$(id -u)" -eq 0 ]] && id dev >/dev/null 2>&1; then
   exec su -s /bin/bash dev -c "/home/dev/workspace/dotfiles/docker/smoke-test.sh"
 fi
+
+# bootstrap-installed tools (claude, agy) live in ~/.local/bin. zsh sets this
+# in PATH; set it here too so the test does not depend on the invoking shell.
+export PATH="$HOME/.local/bin:$PATH"
 
 # ANSI color codes
 GREEN='\033[0;32m'
@@ -108,12 +112,21 @@ echo "Checking Node.js ecosystem..."
 check_command "node" "node"
 check_command "npm" "npm"
 
-# AI tools
+# AI tools (claude / agy are installed by bootstrap.sh into the home volume)
 echo ""
 echo "Checking AI tools..."
 check_command "claude" "Claude Code (claude)"
 check_command "opencode" "OpenCode (opencode)"
-check_command "antigravity" "Antigravity CLI (antigravity)"
+check_command "agy" "Antigravity CLI (agy)"
+
+# Persistent home state (seeded/installed by bootstrap.sh)
+echo ""
+echo "Checking persistent home state..."
+check_file "$HOME/.local/bin/claude" "claude binary in ~/.local/bin"
+check_file "$HOME/.local/share/zinit/zinit.zsh" "zinit seeded in home volume"
+check_file "$HOME/.gitconfig.local" "~/.gitconfig.local (git identity)"
+check_dir "$HOME/.local/share/nvim/lazy" "Neovim plugins (lazy.nvim)"
+check_dir "$HOME/.tmux/plugins/tpm" "tmux plugins (tpm)"
 
 # Neovim
 echo ""
@@ -176,20 +189,22 @@ fi
 # Git configuration
 echo ""
 echo "Checking Git configuration..."
-GIT_USER=$(git config --global user.name 2>/dev/null || echo "")
-GIT_EMAIL=$(git config --global user.email 2>/dev/null || echo "")
+# Unscoped lookup: this is what git itself uses for commits, and unlike
+# `--global` it expands [include] directives (~/.gitconfig.local).
+GIT_USER=$(git config user.name 2>/dev/null || echo "")
+GIT_EMAIL=$(git config user.email 2>/dev/null || echo "")
 
-if [[ -n "$GIT_USER" ]]; then
+if [[ -n "$GIT_USER" && "$GIT_USER" != "YOUR_NAME" ]]; then
   echo -e "${GREEN}[PASS]${RESET} Git user.name configured: $GIT_USER"
 else
-  echo -e "${RED}[FAIL]${RESET} Git user.name: not configured"
+  echo -e "${RED}[FAIL]${RESET} Git user.name: not configured (set GIT_USER_NAME in docker/.env)"
   FAILURES+=("Git user.name")
 fi
 
-if [[ -n "$GIT_EMAIL" ]]; then
+if [[ -n "$GIT_EMAIL" && "$GIT_EMAIL" != *example.com* ]]; then
   echo -e "${GREEN}[PASS]${RESET} Git user.email configured: $GIT_EMAIL"
 else
-  echo -e "${RED}[FAIL]${RESET} Git user.email: not configured"
+  echo -e "${RED}[FAIL]${RESET} Git user.email: not configured (set GIT_USER_EMAIL in docker/.env)"
   FAILURES+=("Git user.email")
 fi
 

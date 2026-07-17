@@ -9,11 +9,11 @@ ARG USER_GID=1000
 
 # ---- APT package versions (Ubuntu 24.04) ----
 ARG GIT_VERSION=1:2.43.0-1ubuntu7.3
-ARG CURL_VERSION=8.5.0-2ubuntu10.8
-ARG WGET_VERSION=1.21.4-1ubuntu4.1
+ARG CURL_VERSION=8.5.0-2ubuntu10.11
+ARG WGET_VERSION=1.21.4-1ubuntu4.3
 ARG UNZIP_VERSION=6.0-28ubuntu4.1
 ARG BUILD_ESSENTIAL_VERSION=12.10ubuntu1
-ARG NCURSES_TERM_VERSION=6.4+20240113-1ubuntu2
+ARG NCURSES_TERM_VERSION=6.4+20240113-1ubuntu2.1
 ARG LOCALES_VERSION=2.39-0ubuntu8.7
 ARG ZSH_VERSION=5.9-6ubuntu2
 ARG TMUX_VERSION=3.4-1ubuntu0.1
@@ -63,8 +63,9 @@ RUN set -eux; \
       ripgrep=${RIPGREP_VERSION} \
       bat=${BAT_VERSION} \
       unixodbc=${UNIXODBC_VERSION} \
-      openssh-client; \
-    locale-gen C.UTF-8 en_US.UTF-8; \
+      openssh-client \
+      tzdata; \
+    locale-gen C.UTF-8 en_US.UTF-8 ja_JP.UTF-8; \
     rm -rf /var/lib/apt/lists/*
 
 # Debian command compatibility
@@ -116,11 +117,10 @@ RUN set -eux; \
     fi; \
     rm -rf /var/lib/apt/lists/*
 
-# ---- Claude Code (official installer) ----
-RUN curl -fsSL https://claude.ai/install.sh | bash
-
-# ---- Antigravity CLI (official installer) ----
-RUN curl -fsSL https://antigravity.google/cli/install.sh | bash
+# NOTE: Self-updating AI CLIs (Claude Code, Antigravity) are NOT baked into
+# the image. They install into /home/dev, which is a persistent named volume;
+# docker/bootstrap.sh installs them once on first container start and they
+# keep themselves up to date from then on.
 
 # ---- nb (minimalist note-taking CLI) ----
 RUN set -eux; \
@@ -143,18 +143,33 @@ RUN set -eux; \
     ln -sf /usr/local/bin/oh-my-opencode /usr/local/bin/oh-my-openagents
 
 # ---- Non-root user ----
+# Pre-create mount points and standard dirs owned by dev: docker would
+# otherwise create root-owned stubs inside the persistent home volume when
+# bind mounts (.ssh, workspace, ...) are attached on first start.
 RUN set -eux; \
     userdel -r ubuntu 2>/dev/null || true; \
     groupadd --gid "${USER_GID}" "${USERNAME}"; \
-    useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /usr/bin/zsh --create-home "${USERNAME}"
+    useradd --uid "${USER_UID}" --gid "${USER_GID}" --shell /usr/bin/zsh --create-home "${USERNAME}"; \
+    install -d -o "${USERNAME}" -g "${USERNAME}" \
+      "/home/${USERNAME}/workspace" \
+      "/home/${USERNAME}/.ssh" \
+      "/home/${USERNAME}/.config" \
+      "/home/${USERNAME}/.config/github-copilot" \
+      "/home/${USERNAME}/.cache" \
+      "/home/${USERNAME}/.local" \
+      "/home/${USERNAME}/.local/bin" \
+      "/home/${USERNAME}/.local/share" \
+      "/home/${USERNAME}/.local/state" \
+      "/home/${USERNAME}/.tmux" \
+      "/home/${USERNAME}/.tmux/plugins"
 
-# ---- zinit pinned commit ----
+# ---- zinit pinned commit (image-side seed) ----
+# /home/dev is a persistent volume that is seeded from the image only once,
+# so tool sources live in /opt; bootstrap.sh copies zinit into the home
+# volume on first start (and after a factory reset).
 RUN set -eux; \
-    git clone https://github.com/zdharma-continuum/zinit.git /tmp/zinit; \
-    git -C /tmp/zinit checkout "${ZINIT_COMMIT}"; \
-    mkdir -p /home/${USERNAME}/.local/share; \
-    mv /tmp/zinit /home/${USERNAME}/.local/share/zinit; \
-    chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
+    git clone https://github.com/zdharma-continuum/zinit.git /opt/zinit; \
+    git -C /opt/zinit checkout "${ZINIT_COMMIT}"
 
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}

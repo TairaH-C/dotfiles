@@ -1,6 +1,7 @@
-[user]
-	name = YOUR_NAME
-	email = YOUR_EMAIL@example.com
+# Personal identity (user.name / user.email) lives in ~/.gitconfig.local,
+# generated at container start from GIT_USER_NAME / GIT_USER_EMAIL in docker/.env.
+[include]
+	path = ~/.gitconfig.local
 
 [core]
 	autocrlf = input
@@ -34,8 +35,9 @@
 
 [alias]
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+# Workspace is a Windows bind mount whose uid differs from the container user;
+# this gitconfig is only ever used inside the single-user dev container.
 [safe]
-	directory = /home/dev/workspace/pvpf-promptflow-ae
-	directory = /mnt/c/path/to/your/repo
+	directory = *
 [credential]
 	helper = store
