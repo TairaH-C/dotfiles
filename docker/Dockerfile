@@ -33,9 +33,6 @@ ARG DELTA_VERSION=0.19.2
 ARG LAZYGIT_VERSION=0.46.1
 ARG LAZYGIT_FALLBACK_VERSION=0.46.0
 ARG NODE_VERSION=22.22.2
-ARG OPENCODE_VERSION=1.3.13
-ARG OH_MY_OPENAGENTS_PACKAGE=oh-my-opencode
-ARG OH_MY_OPENAGENTS_VERSION=3.14.0
 ARG ZINIT_COMMIT=6c9ac1c4bc9bcaede64cb473759ac2c5b9187f98
 ARG NB_VERSION=7.25.4
 
@@ -120,27 +117,15 @@ RUN set -eux; \
 # NOTE: Self-updating AI CLIs (Claude Code, Antigravity) are NOT baked into
 # the image. They install into /home/dev, which is a persistent named volume;
 # docker/bootstrap.sh installs them once on first container start and they
-# keep themselves up to date from then on.
+# keep themselves up to date from then on. Installing them as root under
+# /usr/local instead breaks their built-in updater twice over: dev (uid 1000)
+# cannot write there, and any successful update is discarded on the next
+# image rebuild.
 
 # ---- nb (minimalist note-taking CLI) ----
 RUN set -eux; \
     curl -fsSL "https://raw.githubusercontent.com/xwmx/nb/${NB_VERSION}/nb" -o /usr/local/bin/nb; \
     chmod +x /usr/local/bin/nb
-
-# ---- AI tools (npm global, pinned) ----
-RUN set -eux; \
-    for i in 1 2 3; do \
-      if npm install -g \
-        "opencode-ai@${OPENCODE_VERSION}" \
-        "${OH_MY_OPENAGENTS_PACKAGE}@${OH_MY_OPENAGENTS_VERSION}"; then \
-        break; \
-      fi; \
-      if [ "$i" -eq 3 ]; then \
-        exit 1; \
-      fi; \
-      sleep $((i * 5)); \
-    done; \
-    ln -sf /usr/local/bin/oh-my-opencode /usr/local/bin/oh-my-openagents
 
 # ---- Non-root user ----
 # Pre-create mount points and standard dirs owned by dev: docker would

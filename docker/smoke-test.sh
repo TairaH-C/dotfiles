@@ -116,7 +116,6 @@ check_command "npm" "npm"
 echo ""
 echo "Checking AI tools..."
 check_command "claude" "Claude Code (claude)"
-check_command "opencode" "OpenCode (opencode)"
 check_command "agy" "Antigravity CLI (agy)"
 
 # Persistent home state (seeded/installed by bootstrap.sh)

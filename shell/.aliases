@@ -38,11 +38,6 @@ alias gl='git log --oneline -20'
 alias glo='git log --graph --oneline --decorate -20'
 alias lg='lazygit'
 
-# -- AI tools ------------------------------------------------------------------
-
-# `oc` is intentionally NOT used (collides with the OpenShift CLI).
-alias opc='opencode'
-
 # -- Safety --------------------------------------------------------------------
 
 alias rm='rm -i'
