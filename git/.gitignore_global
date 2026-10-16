@@ -22,3 +22,5 @@ venv/
 
 # Node.js
 node_modules/
+
+**/.claude/settings.local.json
