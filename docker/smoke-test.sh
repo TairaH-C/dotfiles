@@ -125,7 +125,11 @@ check_file "$HOME/.local/bin/claude" "claude binary in ~/.local/bin"
 check_file "$HOME/.local/share/zinit/zinit.zsh" "zinit seeded in home volume"
 check_file "$HOME/.gitconfig.local" "~/.gitconfig.local (git identity)"
 check_dir "$HOME/.local/share/nvim/lazy" "Neovim plugins (lazy.nvim)"
-check_dir "$HOME/.tmux/plugins/tpm" "tmux plugins (tpm)"
+# Every @plugin must sit where TPM looks for it (~/.tmux/plugins/<repo
+# basename>); TPM silently skips a plugin it cannot find there.
+while IFS='#' read -r plugin _; do
+  check_dir "$HOME/.tmux/plugins/${plugin##*/}" "tmux plugin $plugin"
+done < <(grep -oP "^set -g @plugin '\K[^']+" "$HOME/.tmux.conf")
 
 # Neovim
 echo ""

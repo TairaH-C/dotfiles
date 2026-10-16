@@ -69,20 +69,22 @@ if [ ! -d "$HOME/.local/share/nvim/lazy" ]; then
     || fail treesitter "parser install failed (see $NVIM_LOG)"
 fi
 
-# 7. tmux plugins (per-plugin check so a partial failure heals itself)
-while read -r repo dir; do
+# 7. tmux plugins (per-plugin check so a partial failure heals itself). The
+#    list comes from the `@plugin` lines in .tmux.conf, and each plugin is
+#    cloned into the directory TPM derives from it (the repo basename, e.g.
+#    catppuccin/tmux -> ~/.tmux/plugins/tmux). TPM silently skips a plugin it
+#    cannot find there, so any other directory name means it never loads.
+TMUX_CONF="$DOTFILES_DIR/tmux/.tmux.conf"
+TMUX_PLUGINS=$(grep -oP "^set -g @plugin '\K[^']+" "$TMUX_CONF") \
+  || fail tmux-plugins "no @plugin lines found in $TMUX_CONF"
+while IFS='#' read -r repo branch; do
+  [ -n "$repo" ] || continue
+  dir="${repo##*/}"
   [ -d "$HOME/.tmux/plugins/$dir" ] && continue
   log "Cloning tmux plugin $repo..."
-  git clone "https://github.com/$repo" "$HOME/.tmux/plugins/$dir" \
+  git clone ${branch:+-b "$branch"} "https://github.com/$repo" "$HOME/.tmux/plugins/$dir" \
     || fail tmux-plugins "clone of $repo failed"
-done <<'EOF'
-tmux-plugins/tpm tpm
-tmux-plugins/tmux-sensible tmux-sensible
-tmux-plugins/tmux-resurrect tmux-resurrect
-tmux-plugins/tmux-continuum tmux-continuum
-catppuccin/tmux catppuccin
-christoomey/vim-tmux-navigator vim-tmux-navigator
-EOF
+done <<<"$TMUX_PLUGINS"
 
 if [ ${#FAILED[@]} -gt 0 ]; then
   log "Finished with warnings: ${FAILED[*]}"
