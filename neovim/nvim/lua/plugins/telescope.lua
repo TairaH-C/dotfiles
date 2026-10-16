@@ -6,7 +6,8 @@ return {
       "nvim-lua/plenary.nvim",
       {
         "nvim-telescope/telescope-fzf-native.nvim",
-        build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
+        -- cmake はイメージに無い。build-essential はあるので Makefile 経由でビルドする
+        build = "make",
       },
     },
     cmd = "Telescope",
