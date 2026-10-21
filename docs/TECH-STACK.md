@@ -59,6 +59,7 @@
 | :------------------- | :--------- | :--------------------------------------------------- | :--------------------------------- |
 | **Claude Code**      | latest     | bootstrap.sh が初回起動時に home volume へ（自己更新） | Anthropic 製の CLI AI アシスタント |
 | **Antigravity CLI**  | latest     | 同上（バイナリ名は `agy`）                            | Google 製の CLI AI エージェント    |
+| **excel-mcp-server** | latest     | bootstrap.sh が Claude Code に user scope で登録（`uvx` 実行） | Excel ファイル操作 MCP（`~/workspace` 配下のみ） |
 | **nb**               | 7.25.4     | イメージに固定                                        | ミニマルなメモ / ノート CLI        |
 
 Claude Code / Antigravity のログイン状態・設定は `devenv_home` volume に永続化される。

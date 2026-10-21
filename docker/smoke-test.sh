@@ -122,6 +122,14 @@ check_command "agy" "Antigravity CLI (agy)"
 echo ""
 echo "Checking persistent home state..."
 check_file "$HOME/.local/bin/claude" "claude binary in ~/.local/bin"
+# `claude mcp get` also starts the server, so a connected status proves uvx
+# can fetch and run it.
+if claude mcp get excel 2>/dev/null | grep -q 'Connected'; then
+  echo -e "${GREEN}[PASS]${RESET} Claude MCP server excel"
+else
+  echo -e "${RED}[FAIL]${RESET} Claude MCP server excel: not registered or not connecting"
+  FAILURES+=("Claude MCP server excel")
+fi
 check_file "$HOME/.local/share/zinit/zinit.zsh" "zinit seeded in home volume"
 check_file "$HOME/.gitconfig.local" "~/.gitconfig.local (git identity)"
 check_dir "$HOME/.local/share/nvim/lazy" "Neovim plugins (lazy.nvim)"

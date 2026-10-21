@@ -41,6 +41,18 @@ if [ ! -x "$HOME/.local/bin/claude" ]; then
     || fail claude "installer failed (will retry on next start)"
 fi
 
+# 4b. Claude Code MCP servers (user scope, stored in ~/.claude.json). The
+#     check asks claude itself, so a removed or failed registration is redone.
+#     excel-mcp-server runs via uvx (fetched into the uv cache on first use)
+#     and may only touch workbooks under ~/workspace (the Windows bind mount).
+if [ -x "$HOME/.local/bin/claude" ] \
+   && ! "$HOME/.local/bin/claude" mcp get excel >/dev/null 2>&1; then
+  log "Registering excel MCP server for Claude Code..."
+  "$HOME/.local/bin/claude" mcp add excel --scope user -- \
+    uvx excel-mcp-server stdio --allow-dir "$HOME/workspace" >/dev/null \
+    || fail mcp-excel "claude mcp add excel failed (will retry on next start)"
+fi
+
 # 5. Antigravity CLI (binary name: agy)
 if [ ! -x "$HOME/.local/bin/agy" ]; then
   log "Installing Antigravity CLI (first run)..."
